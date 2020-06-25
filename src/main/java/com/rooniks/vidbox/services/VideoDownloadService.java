@@ -1,7 +1,6 @@
 package com.rooniks.vidbox.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.kiulian.downloader.YoutubeException;
 import com.rooniks.vidbox.constants.VideoStates;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.BadRequestException;
@@ -9,7 +8,6 @@ import com.rooniks.vidbox.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
