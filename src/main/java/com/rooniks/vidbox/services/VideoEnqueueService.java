@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class VideoDownloadService {
+public class VideoEnqueueService {
     @Autowired
     VideoRepository videoRepository;
 
