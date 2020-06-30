@@ -4,7 +4,6 @@ import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.YoutubeException;
 import com.github.kiulian.downloader.model.YoutubeVideo;
 import com.github.kiulian.downloader.model.formats.AudioVideoFormat;
-import com.github.kiulian.downloader.model.formats.Format;
 import com.rooniks.vidbox.constants.VideoStates;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.DownloadException;
