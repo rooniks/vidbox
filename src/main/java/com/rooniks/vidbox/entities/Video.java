@@ -20,9 +20,10 @@ public class Video {
     private String url;
     private String title;
     private String description;
-    private Integer likes;
-    private Integer vidViews;
-    private Date publishedDate;
+    private String filePath;
+    private Long vidViews;
+    private Integer lengthSec;
+    private String qualityLabel;
     private String status;
     private Date scheduledTime;
     private Date downloadStartTime;
@@ -30,4 +31,5 @@ public class Video {
     private Date uploadStartTime;
     private Date uploadCompletedTime;
     private Date cleanupTime;
+    private String notes;
 }

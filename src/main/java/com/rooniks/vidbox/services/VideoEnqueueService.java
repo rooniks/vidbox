@@ -8,6 +8,7 @@ import com.rooniks.vidbox.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,11 @@ public class VideoEnqueueService {
         if(alreadyExists != null) {
             throw new BadRequestException("Video with duplicate url is already in state: " + alreadyExists.getStatus());
         }
-        Video video = Video.builder().url(jsonUrl.asText()).status(VideoStates.SCHEDULED).build();
+        Video video = Video.builder()
+                .url(jsonUrl.asText())
+                .status(VideoStates.SCHEDULED)
+                .scheduledTime(new Date())
+                .build();
         Video savedVideo = videoRepository.save(video);
         videoDownloadService.downloadVideo(savedVideo.getId());
 
