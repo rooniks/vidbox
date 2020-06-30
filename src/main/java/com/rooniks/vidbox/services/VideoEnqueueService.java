@@ -16,16 +16,25 @@ public class VideoEnqueueService {
     @Autowired
     VideoRepository videoRepository;
 
+    @Autowired
+    VideoDownloadService videoDownloadService;
+
     public Map<String, String> enqueueVideo(JsonNode body) {
         JsonNode jsonUrl = body.get("url");
         if(jsonUrl == null) {
             throw new BadRequestException("Mandatory parameter url not provided");
         }
+        Video alreadyExists = videoRepository.findOneByUrl(jsonUrl.asText());
+        if(alreadyExists != null) {
+            throw new BadRequestException("Video with duplicate url is already in state: " + alreadyExists.getStatus());
+        }
         Video video = Video.builder().url(jsonUrl.asText()).status(VideoStates.SCHEDULED).build();
         Video savedVideo = videoRepository.save(video);
+        videoDownloadService.downloadVideo(savedVideo.getId());
 
         Map<String, String> map = new HashMap<>();
         map.put("status", "Enqueued with id " + savedVideo.getId());
+
         return map;
     }
 }
