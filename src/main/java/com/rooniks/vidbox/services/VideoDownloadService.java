@@ -28,6 +28,9 @@ public class VideoDownloadService {
     @Autowired
     VideoRepository videoRepository;
 
+    @Autowired
+    VideoUploadService videoUploadService;
+
     @Value("${fileDownloadPath}")
     String fileDownloadPath;
 
@@ -58,10 +61,10 @@ public class VideoDownloadService {
         video.setVidViews(youtubeVideo.details().viewCount());
         video.setTitle(youtubeVideo.details().title());
         video.setLengthSec(youtubeVideo.details().lengthSeconds());
-        video.setDescription("Description: " + youtubeVideo.details().description()
-                + "\nAuthor: " + youtubeVideo.details().author()
+        video.setDescription("Author: " + youtubeVideo.details().author()
                 + "\nKeywords: " + youtubeVideo.details().keywords()
-                + "\nAverage rating: " + youtubeVideo.details().averageRating());
+                + "\nAverage rating: " + youtubeVideo.details().averageRating()
+                + "\nDescription: " + youtubeVideo.details().description());
         video.setDownloadStartTime(new Date());
         videoRepository.save(video);
 
@@ -87,6 +90,7 @@ public class VideoDownloadService {
         videoRepository.save(video);
 
         logger.info("Download completed for video with id " + video.getId());
+        videoUploadService.uploadVideo(video.getId());
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
