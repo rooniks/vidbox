@@ -18,6 +18,7 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String url;
+    private String uploadUrl;
     private String title;
     private String description;
     private String filePath;
