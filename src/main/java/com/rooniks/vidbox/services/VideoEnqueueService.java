@@ -20,7 +20,10 @@ public class VideoEnqueueService {
     @Autowired
     VideoDownloadService videoDownloadService;
 
-    public Map<String, String> enqueueVideo(JsonNode body) {
+    @Autowired
+    VideoUploadService videoUploadService;
+
+    public Map<String, String> enqueueVideoForDownload(JsonNode body) {
         JsonNode jsonUrl = body.get("url");
         if(jsonUrl == null) {
             throw new BadRequestException("Mandatory parameter url not provided");
@@ -41,5 +44,13 @@ public class VideoEnqueueService {
         map.put("status", "Enqueued with id " + savedVideo.getId());
 
         return map;
+    }
+
+    public void enqueueVideoForUpload(JsonNode body) {
+        JsonNode idField = body.get("id");
+        if(idField == null) {
+            throw new BadRequestException("Please supply id field in request body");
+        }
+        videoUploadService.uploadVideo(idField.asInt());
     }
 }

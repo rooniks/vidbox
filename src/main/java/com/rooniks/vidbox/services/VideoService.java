@@ -1,5 +1,6 @@
 package com.rooniks.vidbox.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
