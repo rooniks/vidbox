@@ -58,7 +58,7 @@ public class VideoUploadService {
                     new com.google.api.services.youtube.model.Video();
 
             VideoStatus status = new VideoStatus();
-            status.setPrivacyStatus("private");
+            status.setPrivacyStatus("unlisted");
             videoObjectDefiningMetadata.setStatus(status);
 
             VideoSnippet snippet = new VideoSnippet();
