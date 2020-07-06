@@ -20,3 +20,11 @@ CREATE TABLE public.videos
     CONSTRAINT videos_pkey PRIMARY KEY (id)
 )
 TABLESPACE pg_default;
+
+CREATE TABLE public.client_secrets
+(
+    id serial,
+    project character varying(255) NOT NULL,
+    secret text NOT NULL,
+    CONSTRAINT client_secrets_pkey PRIMARY KEY (id)
+);

@@ -1,4 +1,4 @@
-package com.rooniks.vidbox.utils;
+package com.rooniks.vidbox.services;
 
 // Imported from https://github.com/youtube/api-samples/blob/master/java/src/main/java/com/google/api/services/samples/youtube/cmdline/Auth.java
 
@@ -14,17 +14,23 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.rooniks.vidbox.entities.ClientSecret;
+import com.rooniks.vidbox.exceptions.VidBoxException;
+import com.rooniks.vidbox.repositories.ClientSecretRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.List;
 
 /**
  * Shared class used by every sample. Contains methods for authorizing a user and caching credentials.
  */
-public class Auth {
+@Service
+public class AuthService {
+
+    @Autowired
+    ClientSecretRepository clientSecretRepository;
 
     /**
      * Define a global instance of the HTTP transport.
@@ -47,10 +53,13 @@ public class Auth {
      * @param scopes              list of scopes needed to run youtube upload.
      * @param credentialDatastore name of the credential datastore to cache OAuth tokens
      */
-    public static Credential authorize(List<String> scopes, String credentialDatastore) throws IOException {
-
+    public Credential authorize(List<String> scopes, String credentialDatastore) throws IOException {
+        ClientSecret clientSecret = clientSecretRepository.findOneByProject("vidbox");
+        if(clientSecret == null) {
+            throw new VidBoxException("Client secret not present in database.");
+        }
         // Load client secrets.
-        Reader clientSecretReader = new InputStreamReader(Auth.class.getResourceAsStream("/client_secrets.json"));
+        Reader clientSecretReader = new InputStreamReader(new ByteArrayInputStream(clientSecret.getSecret().getBytes()));
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
 
         // Checks that the defaults have been replaced (Default = "Enter X here").

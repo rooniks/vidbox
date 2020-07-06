@@ -12,7 +12,6 @@ import com.rooniks.vidbox.constants.VideoStates;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.UploadException;
 import com.rooniks.vidbox.repositories.VideoRepository;
-import com.rooniks.vidbox.utils.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,9 @@ public class VideoUploadService {
     @Autowired
     VideoRepository videoRepository;
 
+    @Autowired
+    AuthService authService;
+
     private static YouTube youtube;
     private static final String VIDEO_FILE_FORMAT = "video/*";
     private static final Logger logger = LoggerFactory.getLogger(VideoUploadService.class);
@@ -48,8 +50,8 @@ public class VideoUploadService {
         List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube.upload");
 
         try {
-            Credential credential = Auth.authorize(scopes, "uploadvideo");
-            youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential).setApplicationName(
+            Credential credential = authService.authorize(scopes, "uploadvideo");
+            youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(
                     "vidbox").build();
 
             logger.info("Uploading: {} from location: {}", video.getTitle(), video.getFilePath());
@@ -98,6 +100,9 @@ public class VideoUploadService {
             video.setStatus(VideoStates.UPLOAD_DONE);
             videoRepository.save(video);
         } catch (IOException ex) {
+            video.setStatus(VideoStates.ABORTED);
+            video.setNotes(ex.getMessage());
+            videoRepository.save(video);
             ex.printStackTrace();
         }
     }
