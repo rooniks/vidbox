@@ -1,11 +1,12 @@
 package com.rooniks.vidbox.entities;
 
 
-import lombok.*;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 
 @Builder
