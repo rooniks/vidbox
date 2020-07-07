@@ -17,6 +17,8 @@ CREATE TABLE public.videos
     upload_completed_time timestamp without time zone,
     cleanup_time timestamp without time zone,
     notes text,
+    client_registration character varying(255),
+    principal_name character varying(255),
     CONSTRAINT videos_pkey PRIMARY KEY (id)
 )
 TABLESPACE pg_default;

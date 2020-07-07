@@ -3,19 +3,26 @@ package com.rooniks.vidbox.services;
 // Upload code imported from https://github.com/youtube/api-samples/blob/master/java/src/main/java/com/google/api/services/samples/youtube/cmdline/data/UploadVideo.java
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
-import com.google.common.collect.Lists;
 import com.rooniks.vidbox.constants.VideoStates;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.UploadException;
+import com.rooniks.vidbox.exceptions.VidBoxException;
 import com.rooniks.vidbox.repositories.VideoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
@@ -24,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class VideoUploadService {
@@ -32,11 +38,13 @@ public class VideoUploadService {
     VideoRepository videoRepository;
 
     @Autowired
-    AuthService authService;
+    private OAuth2AuthorizedClientService authorizedClientService;
 
     private static YouTube youtube;
     private static final String VIDEO_FILE_FORMAT = "video/*";
     private static final Logger logger = LoggerFactory.getLogger(VideoUploadService.class);
+    public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+    public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     @Async
     public void uploadVideo(Integer id) {
@@ -47,11 +55,16 @@ public class VideoUploadService {
         if(!video.getStatus().equals(VideoStates.DOWNLOAD_DONE)) {
             throw new UploadException("Video not in DOWNLOAD_DONE state.");
         }
-        List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube.upload");
 
         try {
-            Credential credential = authService.authorize(scopes, "uploadvideo");
-            youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(
+            OAuth2AuthorizedClient oAuth2AuthorizedClient = authorizedClientService.loadAuthorizedClient(
+                    video.getClientRegistration(), video.getPrincipalName());
+            if(oAuth2AuthorizedClient == null) {
+                throw new VidBoxException("Could not obtain oAuth2AuthorizedClient.");
+            }
+            Credential credential = new GoogleCredential()
+                    .setAccessToken(oAuth2AuthorizedClient.getAccessToken().getTokenValue());
+            youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(
                     "vidbox").build();
 
             logger.info("Uploading: {} from location: {}", video.getTitle(), video.getFilePath());

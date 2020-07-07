@@ -6,6 +6,7 @@ import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.BadRequestException;
 import com.rooniks.vidbox.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,7 +24,7 @@ public class VideoEnqueueService {
     @Autowired
     VideoUploadService videoUploadService;
 
-    public Map<String, String> enqueueVideoForDownload(JsonNode body) {
+    public Map<String, String> enqueueVideoForDownload(JsonNode body, OAuth2AuthorizedClient authorizedClient) {
         JsonNode jsonUrl = body.get("url");
         if(jsonUrl == null) {
             throw new BadRequestException("Mandatory parameter url not provided");
@@ -36,6 +37,8 @@ public class VideoEnqueueService {
                 .url(jsonUrl.asText())
                 .status(VideoStates.SCHEDULED)
                 .scheduledTime(new Date())
+                .clientRegistration(authorizedClient.getClientRegistration().getRegistrationId())
+                .principalName(authorizedClient.getPrincipalName())
                 .build();
         Video savedVideo = videoRepository.save(video);
         videoDownloadService.downloadVideo(savedVideo.getId());

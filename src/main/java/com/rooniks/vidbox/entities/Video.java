@@ -2,6 +2,7 @@ package com.rooniks.vidbox.entities;
 
 
 import lombok.*;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -33,4 +34,6 @@ public class Video {
     private Date uploadCompletedTime;
     private Date cleanupTime;
     private String notes;
+    private String clientRegistration;
+    private String principalName;
 }

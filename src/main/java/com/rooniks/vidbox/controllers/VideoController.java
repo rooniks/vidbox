@@ -8,6 +8,8 @@ import com.rooniks.vidbox.services.VideoEnqueueService;
 import com.rooniks.vidbox.services.VideoService;
 import com.rooniks.vidbox.services.VideoUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -27,8 +29,10 @@ public class VideoController {
     VideoUploadService videoUploadService;
 
     @PostMapping("video/download")
-    public Map<String, String> downloadVideo(@RequestBody JsonNode body) throws IOException, YoutubeException {
-        return enqueueService.enqueueVideoForDownload(body);
+    public Map<String, String> downloadVideo(@RequestBody JsonNode body,
+                                             @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient)
+            throws IOException, YoutubeException {
+        return enqueueService.enqueueVideoForDownload(body, authorizedClient);
     }
 
     @GetMapping("videos")
