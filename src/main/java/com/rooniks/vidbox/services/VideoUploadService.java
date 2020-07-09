@@ -38,6 +38,9 @@ public class VideoUploadService {
     VideoRepository videoRepository;
 
     @Autowired
+    VideoCleanupService videoCleanupService;
+
+    @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
     private static YouTube youtube;
@@ -118,5 +121,6 @@ public class VideoUploadService {
             videoRepository.save(video);
             ex.printStackTrace();
         }
+        videoCleanupService.cleanupVideo(video.getId());
     }
 }
