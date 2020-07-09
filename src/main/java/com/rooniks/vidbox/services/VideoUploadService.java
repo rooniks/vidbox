@@ -122,5 +122,10 @@ public class VideoUploadService {
             ex.printStackTrace();
         }
         videoCleanupService.cleanupVideo(video.getId());
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
