@@ -29,7 +29,8 @@ public class VideoController {
 
     @PostMapping("video/download")
     public Map<String, String> downloadVideo(@RequestBody JsonNode body,
-                                             @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient)
+                                             @RegisteredOAuth2AuthorizedClient("google")
+                                                     OAuth2AuthorizedClient authorizedClient)
             throws IOException, YoutubeException {
         return enqueueService.enqueueVideoForDownload(body, authorizedClient);
     }
@@ -43,5 +44,11 @@ public class VideoController {
     public String uploadVideo(@RequestBody JsonNode body) {
         enqueueService.enqueueVideoForUpload(body);
         return "Upload started. Please check logs.";
+    }
+
+    @PostMapping("video/cleanup")
+    public String cleanupVideo(@RequestBody JsonNode body) {
+        enqueueService.enqueueVideoForCleanup(body);
+        return "Cleanup started. Please check logs";
     }
 }

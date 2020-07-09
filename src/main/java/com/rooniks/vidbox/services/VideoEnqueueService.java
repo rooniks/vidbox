@@ -24,6 +24,9 @@ public class VideoEnqueueService {
     @Autowired
     VideoUploadService videoUploadService;
 
+    @Autowired
+    VideoCleanupService videoCleanupService;
+
     public Map<String, String> enqueueVideoForDownload(JsonNode body, OAuth2AuthorizedClient authorizedClient) {
         JsonNode jsonUrl = body.get("url");
         if(jsonUrl == null) {
@@ -55,5 +58,13 @@ public class VideoEnqueueService {
             throw new BadRequestException("Please supply id field in request body");
         }
         videoUploadService.uploadVideo(idField.asInt());
+    }
+
+    public void enqueueVideoForCleanup(JsonNode body) {
+        JsonNode idField = body.get("id");
+        if(idField == null) {
+            throw new BadRequestException("Please supply id field in request body");
+        }
+        videoCleanupService.cleanupVideo(idField.asInt());
     }
 }
