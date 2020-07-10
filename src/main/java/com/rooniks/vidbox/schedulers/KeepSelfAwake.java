@@ -14,11 +14,18 @@ public class KeepSelfAwake {
     @Value("${self.awake.url}")
     String url;
 
+    @Value("${self.awake.enable}")
+    boolean enabled;
+
     @Scheduled(fixedDelayString = "${self.awake.frequency}")
     public void checkSelfHealth() {
-        logger.info("Hitting self health check..");
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(url, String.class);
-        logger.info("Result: {}", result);
+        if(enabled) {
+            logger.info("Hitting self health check..");
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(url, String.class);
+            logger.info("Result: {}", result);
+        } else {
+            logger.info("Self awake disabled");
+        }
     }
 }
