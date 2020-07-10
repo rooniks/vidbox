@@ -115,13 +115,13 @@ public class VideoUploadService {
             video.setUploadCompletedTime(new Date());
             video.setStatus(VideoStates.UPLOAD_DONE);
             videoRepository.save(video);
+            videoCleanupService.cleanupVideo(video.getId());
         } catch (IOException ex) {
             video.setStatus(VideoStates.ABORTED);
             video.setNotes(ex.getMessage());
             videoRepository.save(video);
             ex.printStackTrace();
         }
-        videoCleanupService.cleanupVideo(video.getId());
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
