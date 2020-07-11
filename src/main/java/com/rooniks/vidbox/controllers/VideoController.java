@@ -37,7 +37,7 @@ public class VideoController {
 
     @GetMapping("videos")
     public List<Video> getAllVideos() {
-        return videoService.getallVideos();
+        return videoService.getRecentVideos();
     }
 
     @PostMapping("video/upload")

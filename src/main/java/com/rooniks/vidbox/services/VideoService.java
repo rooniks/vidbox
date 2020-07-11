@@ -12,7 +12,7 @@ public class VideoService {
     @Autowired
     VideoRepository videoRepository;
 
-    public List<Video> getallVideos() {
-        return videoRepository.findAll();
+    public List<Video> getRecentVideos() {
+        return videoRepository.listRecentVideos();
     }
 }
