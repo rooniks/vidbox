@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>VidBox: Personal video backups</title>
+    </head>
+    <body>
+    <p><a href="/createvideo">Add a new video</a></p>
+    <div th:switch="${videos}">
+        <h2 th:case="null">No videos yet!</h2>
+        <div th:case="*">
+            <h2>Videos</h2>
+            <table border="1px">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Url</th>
+                    <th>Quality label</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="video : ${videos}">
+                    <td th:text="${video.id}"></td>
+                    <td th:text="${video.title}"></td>
+                    <td th:text="${video.url}"></td>
+                    <td th:text="${video.qualityLabel}"></td>
+                    <td th:text="${video.status}"></td>
+                    <td th:text="${video.notes}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </body>
+</html>
