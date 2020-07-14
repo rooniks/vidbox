@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VidBox: New video</title>
+</head>
+<body>
+<form action="#" th:action="@{/createvideo}" th:object="${video}" method="post">
+    <label for="name">Video url: </label>
+    <input type="text" th:field="*{url}" id="url" placeholder="Url">
+    <span th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></span>
+    <input type="submit" value="Backup">
+</form>
+</body>
+</html>

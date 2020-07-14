@@ -27,17 +27,16 @@ public class VideoEnqueueService {
     @Autowired
     VideoCleanupService videoCleanupService;
 
-    public Map<String, String> enqueueVideoForDownload(JsonNode body, OAuth2AuthorizedClient authorizedClient) {
-        JsonNode jsonUrl = body.get("url");
-        if(jsonUrl == null) {
+    public Map<String, String> enqueueVideoForDownload(String url, OAuth2AuthorizedClient authorizedClient) {
+        if(url == null) {
             throw new BadRequestException("Mandatory parameter url not provided");
         }
-        Video alreadyExists = videoRepository.findOneByUrl(jsonUrl.asText());
+        Video alreadyExists = videoRepository.findOneByUrl(url);
         if(alreadyExists != null) {
             throw new BadRequestException("Video with duplicate url is already in state: " + alreadyExists.getStatus());
         }
         Video video = Video.builder()
-                .url(jsonUrl.asText())
+                .url(url)
                 .status(VideoStates.SCHEDULED)
                 .scheduledTime(new Date())
                 .clientRegistration(authorizedClient.getClientRegistration().getRegistrationId())

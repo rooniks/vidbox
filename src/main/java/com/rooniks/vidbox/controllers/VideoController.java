@@ -3,6 +3,7 @@ package com.rooniks.vidbox.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.kiulian.downloader.YoutubeException;
 import com.rooniks.vidbox.entities.Video;
+import com.rooniks.vidbox.exceptions.BadRequestException;
 import com.rooniks.vidbox.services.VideoEnqueueService;
 import com.rooniks.vidbox.services.VideoService;
 import com.rooniks.vidbox.services.VideoUploadService;
@@ -31,8 +32,12 @@ public class VideoController {
     public Map<String, String> downloadVideo(@RequestBody JsonNode body,
                                              @RegisteredOAuth2AuthorizedClient("google")
                                                      OAuth2AuthorizedClient authorizedClient)
-            throws IOException, YoutubeException {
-        return enqueueService.enqueueVideoForDownload(body, authorizedClient);
+            throws YoutubeException {
+        JsonNode jsonUrl = body.get("url");
+        if(jsonUrl == null) {
+            throw new BadRequestException("Mandatory param url not passed.");
+        }
+        return enqueueService.enqueueVideoForDownload(jsonUrl.asText(), authorizedClient);
     }
 
     @GetMapping("videos")
