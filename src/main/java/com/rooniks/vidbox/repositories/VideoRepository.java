@@ -11,6 +11,6 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     public Video findOneByUrl(String url);
     public Video findOneById(Integer id);
 
-    @Query(nativeQuery = true, value = "select * from videos order by id desc limit 10")
-    public List<Video> listRecentVideos();
+    @Query(nativeQuery = true, value = "select * from videos where principal_name = ?1 order by id desc limit 10")
+    public List<Video> listRecentVideos(String principalName);
 }

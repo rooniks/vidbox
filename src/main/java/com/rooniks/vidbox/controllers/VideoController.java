@@ -41,8 +41,9 @@ public class VideoController {
     }
 
     @GetMapping("videos")
-    public List<Video> getAllVideos() {
-        return videoService.getRecentVideos();
+    public List<Video> getAllVideos(@RegisteredOAuth2AuthorizedClient("google")
+                                                OAuth2AuthorizedClient authorizedClient) {
+        return videoService.getRecentVideos(authorizedClient);
     }
 
     @PostMapping("video/upload")

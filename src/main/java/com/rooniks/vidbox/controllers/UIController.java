@@ -21,8 +21,9 @@ public class UIController {
     VideoEnqueueService videoEnqueueService;
 
     @GetMapping("/")
-    public String getAllVideos(Model model) {
-        model.addAttribute("videos", videoService.getRecentVideos());
+    public String getAllVideos(Model model,
+                               @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
+        model.addAttribute("videos", videoService.getRecentVideos(authorizedClient));
         return "index";
     }
 
