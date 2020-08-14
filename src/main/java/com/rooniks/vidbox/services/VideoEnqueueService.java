@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class VideoEnqueueService {
@@ -65,5 +66,16 @@ public class VideoEnqueueService {
             throw new BadRequestException("Please supply id field in request body");
         }
         videoCleanupService.cleanupVideo(idField.asInt());
+    }
+
+    public void enqueueVideoForRetry(Integer videoId) {
+        Optional<Video> optionalVideo = videoRepository.findById(videoId);
+        if(!optionalVideo.isPresent()) {
+            throw new BadRequestException("No such video found with id: " + videoId);
+        }
+        Video video = optionalVideo.get();
+        video.setStatus(VideoStates.SCHEDULED);
+        Video savedVideo = videoRepository.save(video);
+        videoDownloadService.downloadVideo(savedVideo.getId());
     }
 }

@@ -20,6 +20,7 @@
                     <th>Status</th>
                     <th>Notes</th>
                     <th>Upload date</th>
+                    <th>Option</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,16 @@
                     <td th:text="${video.status}"></td>
                     <td th:text="${video.notes}"></td>
                     <td th:text="${video.uploadCompletedTime}"></td>
+                    <td>
+                        <div th:switch="${video.status}">
+                            <div th:case="ABORTED">
+                                <form action="#" th:action="@{/retry/} + ${video.id}" method="post">
+                                    <input type="hidden" id="id" placeholder="Id">
+                                    <input type="submit" value="Retry">
+                                </form>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>

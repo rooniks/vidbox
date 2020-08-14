@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -38,6 +39,13 @@ public class UIController {
                                 Model model,
                                 @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
         videoEnqueueService.enqueueVideoForDownload(video.getUrl(), authorizedClient);
+        return "redirect:/";
+    }
+
+    @PostMapping("retry/{videoId}")
+    public String retryVideo(@PathVariable Integer videoId,
+                             @RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
+        videoEnqueueService.enqueueVideoForRetry(videoId);
         return "redirect:/";
     }
 }
