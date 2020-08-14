@@ -48,11 +48,14 @@ public class VideoDownloadService {
         String videoUrl = video.getUrl();
         YoutubeVideo youtubeVideo = null;
         try {
+            downloader.setParserRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
+            downloader.setParserRetryOnFailure(1);
             youtubeVideo = downloader.getVideo(videoUrl);
         } catch (YoutubeException | IOException ex) {
             video.setNotes(ex.getMessage());
             video.setStatus(VideoStates.ABORTED);
             videoRepository.save(video);
+            ex.printStackTrace();
             throw new DownloadException(ex.getMessage());
         }
 
