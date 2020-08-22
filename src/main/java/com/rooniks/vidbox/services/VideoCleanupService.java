@@ -33,6 +33,7 @@ public class VideoCleanupService {
         if(videoFile.delete()) {
             video.setStatus(VideoStates.CLEANED);
             video.setCleanupTime(new Date());
+            video.setNotes(""); // Explicitly setting the notes to blank in case of retries that succeed.
             logger.info("Video with path {} cleaned successfully.", video.getFilePath());
         } else {
             video.setNotes("Couldn't delete the downloaded file.");
