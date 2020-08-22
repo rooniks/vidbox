@@ -7,6 +7,7 @@ import com.github.kiulian.downloader.model.formats.AudioVideoFormat;
 import com.rooniks.vidbox.constants.VideoStates;
 import com.rooniks.vidbox.entities.Video;
 import com.rooniks.vidbox.exceptions.DownloadException;
+import com.rooniks.vidbox.exceptions.NotSupportedException;
 import com.rooniks.vidbox.repositories.VideoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,14 +74,15 @@ public class VideoDownloadService {
 
         File outDir = new File(fileDownloadPath);
         File downloadedFile;
-        List<AudioVideoFormat> formats = youtubeVideo.videoWithAudioFormats();
-        AudioVideoFormat selectedFormat = formats.get(formats.size() - 1);
-        if(formats.size() == 0) {
-            throw new DownloadException("No AudioVideo format detected in the video");
-        }
+        AudioVideoFormat selectedFormat;
         try {
+            List<AudioVideoFormat> formats = youtubeVideo.videoWithAudioFormats();
+            if(formats.size() == 0) {
+                throw new NotSupportedException("Unsupported type. No AudioVideo format detected in the source video.");
+            }
+            selectedFormat = formats.get(formats.size() - 1);
             downloadedFile = youtubeVideo.download(selectedFormat, outDir);
-        } catch (IOException | YoutubeException ex) {
+        } catch (IOException | YoutubeException | NotSupportedException ex ) {
             video.setNotes(ex.getMessage());
             video.setStatus(VideoStates.ABORTED);
             videoRepository.save(video);
