@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.github.sealedtx</groupId>
             <artifactId>java-youtube-downloader</artifactId>
-            <version>2.2.0</version>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
